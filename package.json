@@ -1,0 +1,53 @@
+{
+  "name": "adopr-helper",
+  "displayName": "adopr-helper",
+  "description": "Azure Devops PullRequest Helper",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.102.0"
+  },
+  "categories": [
+    "Other"
+  ],
+"activationEvents": [
+  "onCommand:adopr-helper.setPAT",
+  "onCommand:adopr-helper.downloadChangedFiles"
+],
+  "main": "./src/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "adopr-helper.setPAT",
+        "title": "Set Azure DevOps PAT"
+      },
+      {
+        "command": "adopr-helper.downloadChangedFiles",
+        "title": "Download Changed Files from Azure DevOps PR"
+      }
+    ]
+  },
+  "configuration": {
+    "title": "adopr-helper",
+    "properties": {
+      "adopr-helper.pat": {
+        "type": "string",
+        "default": "",
+        "description": "Azure DevOps Personal Access Token (PAT) for authentication.",
+        "scope": "application"
+      }
+    }
+  },
+  "scripts": {
+    "watch": "echo No build needed for JS version",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@vscode/test-cli": "^0.0.11",
+    "@vscode/test-electron": "^2.5.2",
+    "eslint": "9.31.0"
+  },
+  "dependencies": {
+    "node-fetch": "2.7.0"
+  }
+}
