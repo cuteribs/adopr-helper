@@ -9,11 +9,16 @@
   "categories": [
     "Other"
   ],
-"activationEvents": [
-  "onCommand:adopr-helper.setPAT",
-  "onCommand:adopr-helper.downloadChangedFiles"
-],
-  "main": "./src/extension.js",
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src",
+    "test": "vscode-test"
+  },
   "contributes": {
     "commands": [
       {
@@ -24,28 +29,30 @@
         "command": "adopr-helper.downloadChangedFiles",
         "title": "Download Changed Files from Azure DevOps PR"
       }
-    ]
-  },
-  "configuration": {
-    "title": "adopr-helper",
-    "properties": {
-      "adopr-helper.pat": {
-        "type": "string",
-        "default": "",
-        "description": "Azure DevOps Personal Access Token (PAT) for authentication.",
-        "scope": "application"
+    ],
+    "configuration": {
+      "title": "Azure Devops PullRequest Helper",
+      "properties": {
+        "adopr-helper.pat": {
+          "type": "string",
+          "default": "",
+          "description": "Azure DevOps Personal Access Token (PAT) for authentication.",
+          "scope": "application"
+        }
       }
     }
   },
-  "scripts": {
-    "watch": "echo No build needed for JS version",
-    "lint": "eslint src",
-    "test": "vscode-test"
-  },
   "devDependencies": {
+    "@types/mocha": "^10.0.10",
+    "@types/node": "20.x",
+    "@types/node-fetch": "2.6.12",
+    "@types/vscode": "^1.102.0",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
     "@vscode/test-cli": "^0.0.11",
     "@vscode/test-electron": "^2.5.2",
-    "eslint": "9.31.0"
+    "eslint": "9.31.0",
+    "typescript": "5.8.3"
   },
   "dependencies": {
     "node-fetch": "2.7.0"
