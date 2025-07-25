@@ -1,8 +1,9 @@
 {
   "name": "adopr-helper",
-  "displayName": "adopr-helper",
+  "displayName": "Azure Devops PullRequest Helper",
   "description": "Azure Devops PullRequest Helper",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "publisher": "Cuteribs",
   "engines": {
     "vscode": "^1.102.0"
   },
@@ -55,6 +56,7 @@
     "typescript": "5.8.3"
   },
   "dependencies": {
+    "diff": "8.0.2",
     "node-fetch": "2.7.0"
   }
 }

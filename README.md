@@ -1,71 +1,90 @@
-# adopr-helper README
+# Azure DevOps PR Helper
 
-This is the README for your extension "adopr-helper". After writing up a brief description, we recommend including the following sections.
+A VS Code extension that helps you download and review changed files from Azure DevOps Pull Requests directly within your workspace.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+This extension provides the following commands to streamline your Azure DevOps PR workflow:
 
-For example if there is an image subfolder under your extension project workspace:
+### 🔑 Set Azure DevOps Personal Access Token (PAT)
+- Command: `adopr-helper.setPAT`
+- Securely store your Azure DevOps PAT for API authentication
+- PAT is saved globally in VS Code settings
 
-\!\[feature X\]\(images/feature-x.png\)
-
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+### 📥 Download Changed Files from PR
+- Command: `adopr-helper.downloadChangedFiles`
+- Download all changed files from an Azure DevOps Pull Request
+- Support for both `dev.azure.com` and legacy `visualstudio.com` URLs
+- Creates a `PR_FOLDER` in your workspace with all changed files
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- Azure DevOps account with access to the repository
+- Personal Access Token (PAT) with at least "Code (read)" permissions
+- Active Pull Request in Azure DevOps
+
+## Usage
+
+1. **Set up your PAT:**
+   - Open Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
+   - Run `adopr-helper.setPAT`
+   - Enter your Azure DevOps Personal Access Token
+
+2. **Download PR files:**
+   - Open Command Palette (`Ctrl+Shift+P` / `Cmd+Shift+P`)
+   - Run `adopr-helper.downloadChangedFiles`
+   - Enter the Azure DevOps Pull Request URL
+   - Files will be downloaded to `PR_FOLDER` in your workspace
+
+**Supported PR URL formats:**
+- `https://dev.azure.com/{org}/{project}/_git/{repo}/pullrequest/{id}`
+- `https://{org}.visualstudio.com/{project}/_git/{repo}/pullrequest/{id}`
 
 ## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
 This extension contributes the following settings:
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+* `adopr-helper.pat`: Your Azure DevOps Personal Access Token (stored securely)
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- Only supports active Pull Requests (not completed or abandoned)
+- Pull Requests with merge conflicts are not supported
+- Binary files are filtered out automatically
+- Large files may take longer to download
+
+## Security
+
+- Your Personal Access Token is stored securely in VS Code's global settings
+- The extension only requests "Code (read)" permissions
+- All API calls are made over HTTPS
 
 ## Release Notes
 
-Users appreciate release notes as you update your extension.
-
 ### 1.0.0
 
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
+Initial release of Azure DevOps PR Helper:
+- Set and store Azure DevOps Personal Access Token
+- Download changed files from Pull Requests
+- Support for multiple Azure DevOps URL formats
+- Parallel downloading with concurrency control
+- File type filtering for supported extensions
 
 ---
 
-## Following extension guidelines
+## Development
 
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
+This extension is built with TypeScript and uses the VS Code Extension API.
 
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
+**Project structure:**
+- `src/extension.ts` - Main extension entry point
+- `src/commands/` - Command implementations
+- `src/utils/` - Utility functions for Azure DevOps API
 
-## Working with Markdown
+## Contributing
 
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
+Feel free to submit issues and pull requests to improve this extension.
 
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
+## License
 
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+This extension is released under the MIT License.
