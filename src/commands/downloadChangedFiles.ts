@@ -7,16 +7,16 @@ import {
     getFilePatch,
     saveFile
 } from "../utils/azureDevOps";
+import { getDecryptedPAT } from "../utils/encryption";
 
-export function registerDownloadChangedFilesCommand(
-    context: vscode.ExtensionContext,
-    adoApiVersion: string
-) {
+const adoApiVersion = "7.1";
+
+export function registerDownloadChangedFilesCommand(context: vscode.ExtensionContext) {
     const downloadChangedFilesCommand = vscode.commands.registerCommand(
         "adopr-helper.downloadChangedFiles",
         async () => {
             try {
-                await handleDownloadChangedFiles(adoApiVersion);
+                await handleDownloadChangedFiles();
             } catch (err: any) {
                 console.error(err);
                 vscode.window.showErrorMessage(`Failed to process PR: ${err.message}`);
@@ -26,7 +26,7 @@ export function registerDownloadChangedFilesCommand(
     context.subscriptions.push(downloadChangedFilesCommand);
 }
 
-async function handleDownloadChangedFiles(adoApiVersion: string): Promise<void> {
+async function handleDownloadChangedFiles(): Promise<void> {
     const prUrl = await vscode.window.showInputBox({
         prompt: "Enter the Azure DevOps Pull Request URL",
         ignoreFocusOut: true,
@@ -49,10 +49,8 @@ async function handleDownloadChangedFiles(adoApiVersion: string): Promise<void> 
         `Parsed PR URL:\nOrganization: ${organization}\nProject: ${project}\nRepository: ${repository}\nPull Request ID: ${pullRequestId}`
     );
 
-    // Fetch PAT from settings
-    const pat = vscode.workspace
-        .getConfiguration()
-        .get<string>("adopr-helper.pat");
+    // Fetch PAT from encrypted storage
+    const pat = getDecryptedPAT();
 
     if (!pat) {
         vscode.window.showErrorMessage("Azure DevOps PAT not set. Please run 'Set Azure DevOps PAT' first.");

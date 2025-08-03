@@ -21,16 +21,75 @@
     "test": "vscode-test"
   },
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "adoHelper",
+          "title": "Azure DevOps Helper",
+          "icon": "./icon128.png"
+        }
+      ]
+    },
+    "views": {
+      "adoHelper": [
+        {
+          "id": "adopr-helper.view",
+          "name": "Azure DevOps Helper",
+          "icon": "./icon128.png"
+        }
+      ]
+    },
     "commands": [
       {
-        "command": "adopr-helper.setPAT",
-        "title": "Set Azure DevOps PAT"
+        "command": "adopr-helper.downloadChangedFiles",
+        "title": "adopr: Download Changed Files from Azure DevOps PR",
+        "icon": "$(download)"
       },
       {
-        "command": "adopr-helper.downloadChangedFiles",
-        "title": "Download Changed Files from Azure DevOps PR"
+        "command": "adopr-helper.setPAT",
+        "title": "adopr: Set Personal Access Token (PAT)",
+        "icon": "$(key)"
+      },
+      {
+        "command": "adopr-helper.setOrg",
+        "title": "adopr: Set Organization",
+        "icon": "$(organization)"
+      },
+      {
+        "command": "adopr-helper.setProject",
+        "title": "adopr: Select Project",
+        "icon": "$(project)"
+      },
+      {
+        "command": "adopr-helper.showSelections",
+        "title": "adopr: Show Selections",
+        "icon": "$(info)"
       }
     ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "adopr-helper.setPAT",
+          "when": "view == adopr-helper.view",
+          "group": "navigation"
+        },
+        {
+          "command": "adopr-helper.setOrg",
+          "when": "view == adopr-helper.view",
+          "group": "navigation"
+        },
+        {
+          "command": "adopr-helper.setProject",
+          "when": "view == adopr-helper.view",
+          "group": "navigation"
+        },
+        {
+          "command": "adopr-helper.showSelections",
+          "when": "view == adopr-helper.view",
+          "group": "navigation"
+        }
+      ]
+    },
     "configuration": {
       "title": "Azure Devops PullRequest Helper",
       "properties": {
@@ -39,6 +98,24 @@
           "default": "",
           "description": "Azure DevOps Personal Access Token (PAT) for authentication.",
           "scope": "application"
+        },
+        "adopr-helper.org": {
+          "type": "string",
+          "default": "",
+          "description": "Azure DevOps Organization name.",
+          "scope": "application"
+        },
+        "adopr-helper.project": {
+          "type": "object",
+          "default": null,
+          "description": "Currently selected Azure DevOps project.",
+          "scope": "workspace"
+        },
+        "adopr-helper.repo": {
+          "type": "object",
+          "default": null,
+          "description": "Currently selected Azure DevOps repository.",
+          "scope": "workspace"
         }
       }
     }
