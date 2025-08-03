@@ -1,6 +1,7 @@
 import * as vscode from "vscode";
 import fetch from "node-fetch";
 import { createPatch } from 'diff';
+import { getDecryptedPAT } from './encryption';
 
 export function parsePrUrl(prUrl: string): {
   organization: string;
@@ -130,4 +131,61 @@ export async function saveFile(fileContent: string, filePath: string, downloadFo
   );
 
   await vscode.workspace.fs.writeFile(fullFilePath, Buffer.from(fileContent, "utf8"));
+}
+
+// Azure DevOps API interfaces
+export interface AdoProject {
+  id: string;
+  name: string;
+  description?: string;
+  url: string;
+  visibility: 'private' | 'public';
+}
+
+export interface AdoRepo {
+  id: string;
+  name: string;
+  url: string;
+  project: {
+    id: string;
+    name: string;
+  };
+  defaultBranch: string;
+  size: number;
+}
+
+// Fetch projects from Azure DevOps organization
+export async function fetchProjects(organization: string, pat: string): Promise<AdoProject[]> {
+  const headers = {
+    Authorization: `Basic ${Buffer.from(`:${pat}`).toString("base64")}`,
+    Accept: "application/json",
+  };
+
+  const url = `https://dev.azure.com/${organization}/_apis/projects?api-version=7.1`;
+  const response = await fetch(url, { headers });
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.value || [];
+}
+
+// Fetch repositories from Azure DevOps project
+export async function fetchRepositories(organization: string, projectIdOrName: string, pat: string): Promise<AdoRepo[]> {
+  const headers = {
+    Authorization: `Basic ${Buffer.from(`:${pat}`).toString("base64")}`,
+    Accept: "application/json",
+  };
+
+  const url = `https://dev.azure.com/${organization}/${projectIdOrName}/_apis/git/repositories?api-version=7.1`;
+  const response = await fetch(url, { headers });
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  return data.value || [];
 }
