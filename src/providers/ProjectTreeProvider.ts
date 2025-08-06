@@ -1,11 +1,12 @@
 import * as vscode from 'vscode';
 import { fetchProjects, fetchRepositories as fetchRepos } from '../utils/azureDevOps';
 import { getDecryptedPAT } from '../utils/encryption';
-import { getProject } from '../utils/workspace';
+import { getProject } from '../utils/setting';
 
 export interface ProjectTreeItem {
     name: string;
     type: 'repos' | 'repo' | 'pullrequests' | 'pullrequest' | 'pipelines' | 'pipeline' | 'feeds' | 'feed';
+    icon: string;
 }
 
 export class ProjectTreeProvider implements vscode.TreeDataProvider<ProjectTreeItem> {
@@ -28,10 +29,10 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<ProjectTreeI
 
     getTreeItem(item: ProjectTreeItem): vscode.TreeItem {
         const treeItem = new vscode.TreeItem(item.name);
+        treeItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
+        treeItem.iconPath = new vscode.ThemeIcon(item.icon);
 
         if (item.type === 'repos') {
-            treeItem.collapsibleState = vscode.TreeItemCollapsibleState.Collapsed;
-            treeItem.iconPath = new vscode.ThemeIcon(item.type);
             treeItem.contextValue = 'repos';
             treeItem.command = {
                 command: 'adopr-helper.selectRepo',
@@ -39,8 +40,6 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<ProjectTreeI
                 arguments: [item]
             };
         } else if (item.type === 'pullrequests' || item.type === 'pipelines' || item.type === 'feeds') {
-            treeItem.collapsibleState = vscode.TreeItemCollapsibleState.None;
-            treeItem.iconPath = new vscode.ThemeIcon(item.type);
             treeItem.contextValue = 'repository';
             treeItem.command = {
                 command: 'adopr-helper.selectRepo',
@@ -77,13 +76,20 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<ProjectTreeI
     private loadProjectItems(): void {
         const items: ProjectTreeItem[] = [{
             name: 'Repos',
-            type: 'repos' as const
+            type: 'repos',
+            icon: 'repo-clone'
         }, {
             name: 'Pull Requests',
-            type: 'pullrequests' as const
+            type: 'pullrequests',
+            icon: 'git-pull-request'
         }, {
             name: 'Pipelines',
-            type: 'pipelines' as const
+            type: 'pipelines',
+            icon: 'github-action'
+        }, {
+            name: 'Feeds',
+            type: 'feeds',
+            icon: 'package'
         }];
         this.projectItems = items;
         this._onDidChangeTreeData.fire();
@@ -104,7 +110,13 @@ export class ProjectTreeProvider implements vscode.TreeDataProvider<ProjectTreeI
         const repos = await fetchRepos(org, project, pat);
         return repos.map(repo => ({
             name: repo.name,
-            type: 'repo' as const
+            type: 'repo',
+            icon: 'repo'
+            // command: {
+            //     command: 'adopr-helper.openRepo',
+            //     title: 'Open Repository',
+            //     arguments: [repo]
+            // }
         }));
     }
 
