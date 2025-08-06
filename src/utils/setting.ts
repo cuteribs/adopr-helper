@@ -1,4 +1,5 @@
 import * as vscode from 'vscode';
+import { getDecryptedPAT } from './encryption';
 
 export interface Project {
     id: string;
@@ -9,6 +10,14 @@ export interface Repo {
     id: string;
     name: string;
     project: string;
+}
+
+function getConfig(key: string, errorMessage: string): string | undefined {
+    const result = vscode.workspace.getConfiguration().get<string>(`adopr-helper.${key}`);
+
+    if (result) return result;
+
+    throw new Error(errorMessage);
 }
 
 /**
@@ -26,13 +35,7 @@ export async function setRepo(repository: string): Promise<void> {
  * Get the currently selected Azure DevOps repository from workspace configuration
  */
 export function getRepo(): string | undefined {
-    const result = vscode.workspace.getConfiguration().get<string>('adopr-helper.repo');
-
-    if (!result) {
-        throw new Error('Azure DevOps repository is not set');
-    }
-
-    return result;
+    return getConfig('repo', 'Azure DevOps repository is not set');
 }
 
 /**
@@ -49,39 +52,34 @@ export async function setProject(project: string): Promise<void> {
 /**
  * Get the currently selected Azure DevOps project from workspace configuration
  */
-export function getProject(): string {
-    const result = vscode.workspace.getConfiguration().get<string>('adopr-helper.project');
-
-    if (!result) {
-        throw new Error('Azure DevOps project is not set');
-    }
-
-    return result;
+export function getProject(): string | undefined {
+    return getConfig('project', 'Azure DevOps project is not set');
 }
 
-/**
- * Clear the selected project and repository
- */
-export async function clearSelections(): Promise<void> {
-    await vscode.workspace.getConfiguration().update(
-        'adopr-helper.project',
-        undefined,
-        vscode.ConfigurationTarget.Workspace
-    );
-    await vscode.workspace.getConfiguration().update(
-        'adopr-helper.repo',
-        undefined,
-        vscode.ConfigurationTarget.Workspace
-    );
+export function getOrg(): string | undefined {
+    return getConfig('org', 'Azure DevOps Organization is not set');
 }
 
 /**
  * Show the current selections in a status message
  */
 export function showCurrentSelections(): void {
+    const pat = getDecryptedPAT();
+
+    if(!pat) {
+        vscode.window.showWarningMessage('Azure DevOps PAT is not set');
+        return;
+    }
+
+    const org = getOrg();
+
+    if(!org) {
+        vscode.window.showWarningMessage('Azure DevOps PAT is not set');
+        return;
+    }
+
     const project = getProject();
     const repo = getRepo();
-
     if (project && repo) {
         vscode.window.showInformationMessage(
             `Selected: ${project} → ${repo}`

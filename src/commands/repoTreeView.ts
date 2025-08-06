@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { setProject, setRepo, showCurrentSelections } from '../utils/workspace';
+import { setProject, setRepo, showCurrentSelections } from '../utils/setting';
 import { fetchProjects } from '../utils/azureDevOps';
 import { getDecryptedPAT, storeEncryptedPAT } from '../utils/encryption';
 import { ProjectTreeItem, ProjectTreeProvider } from '../providers/ProjectTreeProvider';
@@ -153,9 +153,7 @@ export function registerRepoTreeView(context: vscode.ExtensionContext) {
         }
     );
 
-    const showSelectionsCommand = vscode.commands.registerCommand('adopr-helper.showSelections', () => {
-        showCurrentSelections();
-    });
+    const showSelectionsCommand = vscode.commands.registerCommand('adopr-helper.showSelections', showCurrentSelections);
 
     // Add to subscriptions
     context.subscriptions.push(

@@ -24,18 +24,18 @@
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "adoHelper",
+          "id": "adopr-helper",
           "title": "Azure DevOps Helper",
           "icon": "./icon128.png"
         }
       ]
     },
     "views": {
-      "adoHelper": [
+      "adopr-helper": [
         {
-          "id": "adopr-helper.view",
-          "name": "Azure DevOps Helper",
-          "icon": "./icon128.png"
+          "id": "adopr-helper.pullrequests",
+          "name": "Requests",
+          "icon": "$(pullRequest)"
         }
       ]
     },
@@ -70,23 +70,23 @@
       "view/title": [
         {
           "command": "adopr-helper.setPAT",
-          "when": "view == adopr-helper.view",
-          "group": "navigation"
+          "when": "view == adopr-helper.pullrequests",
+          "group": "navigation@0"
         },
         {
           "command": "adopr-helper.setOrg",
-          "when": "view == adopr-helper.view",
-          "group": "navigation"
+          "when": "view == adopr-helper.pullrequests",
+          "group": "navigation@1"
         },
         {
           "command": "adopr-helper.setProject",
-          "when": "view == adopr-helper.view",
-          "group": "navigation"
+          "when": "view == adopr-helper.pullrequests",
+          "group": "navigation@2"
         },
         {
           "command": "adopr-helper.showSelections",
-          "when": "view == adopr-helper.view",
-          "group": "navigation"
+          "when": "view == adopr-helper.pullrequests",
+          "group": "navigation@3"
         }
       ]
     },
